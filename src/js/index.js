@@ -1,4 +1,5 @@
-const API_KEY = '32586703-3cda94dac50b012465c4c9243';
+const axios = require('axios').default;
+
 const API_URL = 'https://pixabay.com/api/';
 
 refs = {
@@ -7,26 +8,50 @@ refs = {
     gallery: document.querySelector('.gallery'),
 }
 
-class img {
+class Img {
     constructor({searchValue}){
         this.searchValue = searchValue;
         this.currentPage = 1;
     }
 
-    fetchImg(){
-
+    async fetchImg(){
+        try {
+            const response = await axios.get(API_URL, {
+                params: {
+                key: '32586703-3cda94dac50b012465c4c9243',
+                q: this.searchValue,
+                image_type: 'photo',
+                orientation: 'horizontal',
+                safesearch: true,                
+                per_page: 20,
+                page: this.currentPage,
+            }
+        });
+            return response;            
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     nextPage(){
         this.currentPage += 1;
-        this.fetchImg();
+    }
+
+    resetPage(){
+        this.currentPage = 1;
     }
 }
 
+const img = new Img({
+    searchValue: '',
+});
 
 function serchImg (event){
     event.preventDefault();
-    console.log(event.target.searchQuery.value);
+    img.searchValue = event.target.searchQuery.value;
+    img.fetchImg().then(({ data }) => {
+        console.log(data);
+    });
     // *********
     event.target.searchQuery.value = '';
 }
