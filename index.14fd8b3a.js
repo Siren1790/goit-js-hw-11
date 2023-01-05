@@ -1,2 +1,0 @@
-refs={formRef:document.querySelector("#search-form"),loadBtnRef:document.querySelector(".js-load-more"),gallery:document.querySelector(".gallery")};refs.formRef.addEventListener("submit",(function(e){e.preventDefault(),console.log(e.target.searchQuery.value),e.target.searchQuery.value=""})),refs.loadBtnRef.addEventListener("click",(function(){console.log("LOAD MORE...")}));
-//# sourceMappingURL=index.14fd8b3a.js.map
