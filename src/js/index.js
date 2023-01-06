@@ -10,6 +10,8 @@ const img = new Img({
     searchValue: '',
 });
 
+const gallery = new SimpleLightbox('.gallery a');
+
 function serchImg (event){
     event.preventDefault();
 
@@ -26,6 +28,8 @@ function serchImg (event){
         
         renderUserListItems(data.hits);
 
+        gallery.refresh();
+
         if (refs.gallery.children.length < data.total){
             refs.loadBtnRef.hidden = false;
         }
@@ -37,6 +41,7 @@ function markupNext (){
     img.nextPage();
     img.fetchImg().then(({ data }) => {
         renderUserListItems(data.hits);
+        gallery.refresh();
         if(refs.gallery.children.length === data.total){
             refs.loadBtnRef.hidden = true;
         }
@@ -72,10 +77,7 @@ function renderUserListItems(imgs) {
     refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
 
-const gallery = new SimpleLightbox('.photo-card img', { /* options */ 
-    captionsData: 'alt',
-    captionDelay: '250'
-});
+
 
 refs.formRef.addEventListener('submit', serchImg);
 refs.loadBtnRef.addEventListener('click', markupNext);
