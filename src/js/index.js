@@ -1,46 +1,7 @@
-const axios = require('axios').default;
+import { Img } from "./getImgsClass";
+import { refs } from "./refs";
 
-const API_URL = 'https://pixabay.com/api/';
-
-refs = {
-    formRef: document.querySelector('#search-form'),
-    loadBtnRef: document.querySelector('.js-load-more'),
-    gallery: document.querySelector('.gallery'),
-}
-
-class Img {
-    constructor({searchValue}){
-        this.searchValue = searchValue;
-        this.currentPage = 1;
-    }
-
-    async fetchImg(){
-        try {
-            const response = await axios.get(API_URL, {
-                params: {
-                key: '32586703-3cda94dac50b012465c4c9243',
-                q: this.searchValue,
-                image_type: 'photo',
-                orientation: 'horizontal',
-                safesearch: true,                
-                per_page: 20,
-                page: this.currentPage,
-            }
-        });
-            return response;            
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    nextPage(){
-        this.currentPage += 1;
-    }
-
-    resetPage(){
-        this.currentPage = 1;
-    }
-}
+refs.loadBtnRef.hidden = true;
 
 const img = new Img({
     searchValue: '',
@@ -48,31 +9,63 @@ const img = new Img({
 
 function serchImg (event){
     event.preventDefault();
-    img.searchValue = event.target.searchQuery.value;
-    img.fetchImg().then(({ data }) => {
-        console.log(data);
-    });
-    // *********
+
+    refs.gallery.innerHTML= '';
+    img.resetPage();
+
+    img.searchValue = event.target.searchQuery.value.trim();
     event.target.searchQuery.value = '';
+
+    img.fetchImg().then(({ data }) => {
+        if (!data.total){
+            return console.log('OPS No Img');
+        }
+        
+        renderUserListItems(data.hits);
+
+        if (refs.gallery.children.length < data.total){
+            refs.loadBtnRef.hidden = false;
+        }
+
+    });
 }
 
 function markupNext (){
-    // *********
-    console.log("LOAD MORE...")
+    img.nextPage();
+    img.fetchImg().then(({ data }) => {
+        renderUserListItems(data.hits);
+        if(refs.gallery.children.length === data.total){
+            refs.loadBtnRef.hidden = true;
+        }
+    });
+
+    
 }
 
-function renderUserListItems(users) {
-    const markup = users
-    .map((user) => `<li class="item">
-        <p><b>Name</b>: ${user.name}</p>
-        <p><b>Email</b>: ${user.email}</p>
-        <p><b>Company</b>: ${user.company.name}</p>
-        </li>`
-    )
-    .join("");
-    userList.innerHTML = markup;
-}
+function renderUserListItems(imgs) {
+    const markup = imgs
+    .map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => 
+    `<div class="photo-card">
+        <img src="${webformatURL}" alt="${tags}" loading="lazy" width="500px"/>
+        <div class="info">
+            <p class="info-item">
+                <b>Likes ${likes}</b>
+            </p>
+            <p class="info-item">
+                <b>Views ${views}</b>
+            </p>
+            <p class="info-item">
+                <b>Comments ${comments}</b>
+            </p>
+            <p class="info-item">
+                <b>Downloads ${downloads}</b>
+            </p>
+        </div>
+    </div>`)
+    .join('');
 
+    refs.gallery.insertAdjacentHTML('beforeend', markup);
+}
 
 refs.formRef.addEventListener('submit', serchImg);
 refs.loadBtnRef.addEventListener('click', markupNext);
