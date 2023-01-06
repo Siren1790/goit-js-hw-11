@@ -1,6 +1,6 @@
 refs = {
     formRef: document.querySelector('#search-form'),
-    loadBtnRef: document.querySelector('.js-load-more'),
+    loadBtnRef: document.querySelector('.load-more'),
     gallery: document.querySelector('.gallery'),
 }
 

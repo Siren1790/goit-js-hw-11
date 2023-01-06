@@ -1,7 +1,10 @@
 import { Img } from "./getImgsClass";
 import { refs } from "./refs";
 
-refs.loadBtnRef.hidden = true;
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
+
+// refs.loadBtnRef.hidden = true;
 
 const img = new Img({
     searchValue: '',
@@ -46,26 +49,33 @@ function renderUserListItems(imgs) {
     const markup = imgs
     .map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => 
     `<div class="photo-card">
-        <img src="${webformatURL}" alt="${tags}" loading="lazy" width="500px"/>
-        <div class="info">
-            <p class="info-item">
-                <b>Likes ${likes}</b>
-            </p>
-            <p class="info-item">
-                <b>Views ${views}</b>
-            </p>
-            <p class="info-item">
-                <b>Comments ${comments}</b>
-            </p>
-            <p class="info-item">
-                <b>Downloads ${downloads}</b>
-            </p>
-        </div>
+        <a href="${largeImageURL}">
+            <img src="${webformatURL}" alt="${tags}" loading="lazy" width="500px"/>
+            <div class="info">
+                <p class="info-item">
+                    <b>Likes - ${likes}</b>
+                </p>
+                <p class="info-item">
+                    <b>Views - ${views}</b>
+                </p>
+                <p class="info-item">
+                    <b>Comments - ${comments}</b>
+                </p>
+                <p class="info-item">
+                    <b>Downloads - ${downloads}</b>
+                </p>
+            </div>
+        </a>
     </div>`)
     .join('');
 
     refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
+
+const gallery = new SimpleLightbox('.photo-card img', { /* options */ 
+    captionsData: 'alt',
+    captionDelay: '250'
+});
 
 refs.formRef.addEventListener('submit', serchImg);
 refs.loadBtnRef.addEventListener('click', markupNext);
