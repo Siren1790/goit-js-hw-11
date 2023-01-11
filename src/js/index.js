@@ -15,6 +15,8 @@ const gallery = new SimpleLightbox('.gallery a');
 function serchImg (event){
     event.preventDefault();
 
+    refs.loadBtnRef.hidden = true;
+
     refs.gallery.innerHTML= '';
     img.resetPage();
 
