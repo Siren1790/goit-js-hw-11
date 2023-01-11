@@ -1,5 +1,5 @@
-import { Img } from "./getImgsClass";
-import { refs } from "./refs";
+import { Img } from "./getImgsClass.js";
+import { refs } from "./refs.js";
 
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
